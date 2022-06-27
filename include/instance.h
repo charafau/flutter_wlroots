@@ -13,6 +13,9 @@
 #include "renderer.h"
 #include "input.h"
 #include "handle_map.h"
+#include <wlr/types/wlr_server_decoration.h>
+#include <wlr/types/wlr_xdg_decoration_v1.h>
+
 
 struct fwr_instance {
   struct wl_display *wl_display;
@@ -72,6 +75,16 @@ struct fwr_instance {
   atomic_intptr_t vsync_baton;
 
   struct fwr_renderer fwr_renderer;
+
+
+  // Server side decorations
+  struct wlr_server_decoration_manager *server_decoration_manager;
+	struct wl_listener server_decoration;
+	struct wl_list decorations; // sway_server_decoration::link
+
+	struct wlr_xdg_decoration_manager_v1 *xdg_decoration_manager;
+	struct wl_listener xdg_decoration;
+	struct wl_list xdg_decorations; // sway_xdg_decoration::link
 };
 
 struct fwr_output {

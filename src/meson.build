@@ -10,4 +10,5 @@ fwr_src += files(
     'output.c',
     'surface.c',
     'platform_channel.c',
+    'decoration.c',
 )

@@ -47,6 +47,7 @@
 #include "task.h"
 #include "output.h"
 #include "surface.h"
+#include "decoration.h"
 
 //#define eglGetProcAddr eglGetProcAddress
 //#define __glintercept_log(...) wlr_log(WLR_INFO, __VA_ARGS__)
@@ -267,6 +268,28 @@ bool fwr_instance_create(struct fwr_instance_opts opts, struct fwr_instance **in
   instance->xdg_shell = wlr_xdg_shell_create(instance->wl_display);
   instance->new_xdg_surface.notify = fwr_new_xdg_surface;
   wl_signal_add(&instance->xdg_shell->events.new_surface, &instance->new_xdg_surface);
+
+
+  // decorations
+  instance->server_decoration_manager =
+		wlr_server_decoration_manager_create(instance->wl_display);
+	wlr_server_decoration_manager_set_default_mode(
+		instance->server_decoration_manager,
+		WLR_SERVER_DECORATION_MANAGER_MODE_SERVER);
+	wl_signal_add(&instance->server_decoration_manager->events.new_decoration,
+		&instance->server_decoration);
+	instance->server_decoration.notify = handle_server_decoration;
+	wl_list_init(&instance->decorations);
+
+
+  instance->xdg_decoration_manager =
+		wlr_xdg_decoration_manager_v1_create(instance->wl_display);
+	wl_signal_add(
+			&instance->xdg_decoration_manager->events.new_toplevel_decoration,
+			&instance->xdg_decoration);
+	instance->xdg_decoration.notify = handle_xdg_decoration;
+	wl_list_init(&instance->xdg_decorations);
+
 
   fwr_input_init(instance);
 

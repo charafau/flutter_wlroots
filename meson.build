@@ -3,7 +3,12 @@ project('flutter wlroots', 'c', 'cpp')
 cc = meson.get_compiler('c')
 
 if get_option('flutter_compositor')
-  add_project_arguments('-DFLUTTER_COMPOSITOR', language : 'c')
+  add_project_arguments(
+    [
+      '-DFLUTTER_COMPOSITOR',
+      '-DWLR_USE_UNSTABLE',
+    ], 
+    language : 'c')
 endif
 
 embedder_dep = subproject('flutter_embedder').get_variable('embedder_dep')
